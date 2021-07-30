@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
@@ -27,10 +30,9 @@ public class BeerDTO {
 
     private int max;
 
-    @Size(min = 0)
     private int quantity;
 
-    @NotEmpty
-    @Size(max = 8)
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private BeerType type;
 }
