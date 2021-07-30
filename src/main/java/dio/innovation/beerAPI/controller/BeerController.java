@@ -1,7 +1,8 @@
 package dio.innovation.beerAPI.controller;
 
 import dio.innovation.beerAPI.dto.BeerDTO;
-import dio.innovation.beerAPI.exception.BeerNoSuchElementExpertion;
+import dio.innovation.beerAPI.exception.BeerAlreadyRegisteredException;
+import dio.innovation.beerAPI.exception.BeerNoSuchElementException;
 import dio.innovation.beerAPI.service.BeerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,9 +20,14 @@ public class BeerController {
     BeerService beerService;
 
     @PostMapping("/create")
-    @ResponseStatus(HttpStatus.CREATED)
-    public String createBeer(@RequestBody @Valid BeerDTO beerDTO) {
-        return beerService.createBeer(beerDTO);
+    public ResponseEntity<String> createBeer(@RequestBody @Valid BeerDTO beerDTO) throws BeerAlreadyRegisteredException {
+
+        try {
+            String res = beerService.createBeer(beerDTO);
+            return new ResponseEntity<>(res, HttpStatus.CREATED);
+        }catch (BeerAlreadyRegisteredException err) {
+            return new ResponseEntity<>(err.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/list")
@@ -36,7 +42,7 @@ public class BeerController {
         try {
             BeerDTO beerDTO = beerService.findByIdBeer(id);
             return new ResponseEntity<>(beerDTO, HttpStatus.OK);
-        }catch (BeerNoSuchElementExpertion err) {
+        }catch (BeerNoSuchElementException err) {
             return new ResponseEntity<>(null , HttpStatus.NOT_FOUND);
         }
     }
@@ -47,8 +53,8 @@ public class BeerController {
         try {
             String res = beerService.updateBeer(id, beerDTO);
             return new ResponseEntity<>(res, HttpStatus.OK);
-        }catch (BeerNoSuchElementExpertion err) {
-            return new ResponseEntity<>(null , HttpStatus.NOT_FOUND);
+        }catch (BeerAlreadyRegisteredException err) {
+            return new ResponseEntity<>(err.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -57,8 +63,8 @@ public class BeerController {
         try {
             String res = beerService.deleteBeer(id);
             return new ResponseEntity<>(res, HttpStatus.OK);
-        }catch (BeerNoSuchElementExpertion err) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }catch (BeerNoSuchElementException err) {
+            return new ResponseEntity<>(err.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
