@@ -10,7 +10,6 @@ public class StringBeerDTOBuilder {
                 "\t\"max\":50,\n" +
                 "\t\"quantity\":20,\n" +
                 "\t\"type\":\"ALE\",\n" +
-                "\t\"imagePath\":\"/imagePath/img.jpeg\",\n" +
                 "\t\"consumptionTemperature\": 5,\n" +
                 "\t\"alcoholicStrenght\" : 60,\n" +
                 "\t\"description\" : \"description...\"\n" +
@@ -24,7 +23,6 @@ public class StringBeerDTOBuilder {
                 "\t\"max\":50,\n" +
                 "\t\"quantity\":20,\n" +
                 "\t\"type\":\"ALE\",\n" +
-                "\t\"imagePath\":\"/imagePath/img.jpeg\",\n" +
                 "\t\"consumptionTemperature\": 5,\n" +
                 "\t\"alcoholicStrenght\" : 60,\n" +
                 "\t\"description\" : \"description...\"\n" +
@@ -39,7 +37,6 @@ public class StringBeerDTOBuilder {
                 "\t\"max\":50,\n" +
                 "\t\"quantity\":20,\n" +
                 "\t\"type\":\"ALE\",\n" +
-                "\t\"imagePath\":\"/imagePath/img.jpeg\",\n" +
                 "\t\"consumptionTemperature\": 5,\n" +
                 "\t\"alcoholicStrenght\" : 60,\n" +
                 "\t\"description\" : \"description...\"\n" +

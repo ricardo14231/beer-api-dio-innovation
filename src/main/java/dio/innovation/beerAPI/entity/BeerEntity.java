@@ -38,9 +38,6 @@ public class BeerEntity {
     private BeerType type;
 
     @Column
-    private String imagePath;
-
-    @Column
     private byte consumptionTemperature;
 
     @Column(nullable = false)

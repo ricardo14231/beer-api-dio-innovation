@@ -4,6 +4,7 @@ import dio.innovation.beerAPI.dto.BeerDTO;
 import dio.innovation.beerAPI.entity.BeerEntity;
 import dio.innovation.beerAPI.exception.BeerAlreadyRegisteredException;
 import dio.innovation.beerAPI.exception.BeerNoSuchElementException;
+import dio.innovation.beerAPI.exception.BeerQuantityException;
 import dio.innovation.beerAPI.mapper.BeerMapper;
 import dio.innovation.beerAPI.repository.BeerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,20 @@ public class BeerService {
         return String.format("Cerveja com ID: %o deleteda!", id );
     }
 
+    public BeerDTO incrementQuantityBeer(Long id, int quantityToIncrement) throws BeerQuantityException {
+        BeerEntity beerEntity = verifyIfExists(id);
+
+        int quantityToMaxIncrement = quantityToIncrement + beerEntity.getQuantity();
+
+        if(quantityToMaxIncrement <= beerEntity.getMax()) {
+            int currentQuantity = beerEntity.getQuantity();
+            beerEntity.setQuantity(currentQuantity + quantityToIncrement);
+            beerRepository.save(beerEntity);
+            return beerMapper.toDTO(beerEntity);
+        }
+        throw new BeerQuantityException();
+    }
+
     private BeerEntity verifyIfExists(Long id) {
         return beerRepository.findById(id)
                 .orElseThrow(() -> new BeerNoSuchElementException(id));
@@ -83,5 +98,4 @@ public class BeerService {
             throw new BeerAlreadyRegisteredException();
         }
     }
-
 }

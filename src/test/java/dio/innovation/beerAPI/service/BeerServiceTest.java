@@ -5,6 +5,7 @@ import dio.innovation.beerAPI.dto.BeerDTO;
 import dio.innovation.beerAPI.entity.BeerEntity;
 import dio.innovation.beerAPI.exception.BeerAlreadyRegisteredException;
 import dio.innovation.beerAPI.exception.BeerNoSuchElementException;
+import dio.innovation.beerAPI.exception.BeerQuantityException;
 import dio.innovation.beerAPI.mapper.BeerMapper;
 import dio.innovation.beerAPI.repository.BeerRepository;
 import org.junit.jupiter.api.Assertions;
@@ -93,8 +94,8 @@ public class BeerServiceTest {
         when(beerRepository.findById( expectedBeerToUpdate.getId() )).thenReturn(Optional.of(expectedBeerToUpdate));
         when(beerRepository.save(expectedBeerToUpdate)).thenReturn(expectedBeerToUpdate);
 
-        assertThat(String.format("Cerveja com ID: %o atualizada!", 1L),
-                is(beerService.updateBeer(1L, beerDTOUpdate)));
+        assertThat(String.format("Cerveja com ID: %o atualizada!", beerDTOUpdate.getId()),
+                is(beerService.updateBeer(beerDTOUpdate.getId(), beerDTOUpdate)));
     }
 
     @Test
@@ -106,7 +107,7 @@ public class BeerServiceTest {
         when(beerRepository.findById( expectedBeerToUpdate.getId() )).thenReturn(Optional.empty());
 
         Assertions.assertThrows(BeerNoSuchElementException.class, () ->
-                beerService.updateBeer( 1L, beerUpdate ));
+                beerService.updateBeer( beerUpdate.getId(), beerUpdate ));
     }
 
     @Test
@@ -152,8 +153,54 @@ public class BeerServiceTest {
 
         when(beerRepository.findById(1L)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(BeerNoSuchElementException.class, () ->
-                beerService.deleteBeer( 1L));
+        Assertions.assertThrows(BeerNoSuchElementException.class,
+                () -> beerService.deleteBeer( 1L));
+    }
+
+    @Test
+    @DisplayName("Deve permitir incrementar a quantidade de beer.")
+    void whenQuantityBeerInformatedThenIncrementToBeer() throws BeerQuantityException {
+        BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
+        BeerEntity beerEntity = beerMapper.toModel(beerDTO);
+
+        when(beerRepository.findById( beerDTO.getId() )).thenReturn(Optional.of(beerEntity));
+        when(beerRepository.save(beerEntity)).thenReturn(beerEntity);
+
+        int incrementToBeer = 5;
+        int expectedToAfterIncrement = beerDTO.getQuantity() + incrementToBeer;
+
+        BeerDTO beerDTOAfterIncrement = beerService.incrementQuantityBeer( beerDTO.getId(),  incrementToBeer);
+
+        assertThat(expectedToAfterIncrement, equalTo(beerDTOAfterIncrement.getQuantity()));
+        assertThat(expectedToAfterIncrement, lessThan(beerDTOAfterIncrement.getMax()));
+    }
+
+    @Test
+    @DisplayName("Deve lançar a Exception após a soma do incremento com a quantidade de beer ultrapassar o max.")
+    void whenQuantityPlusCurrentBeerInformatedOverrunMaxThenThrowsExceptionQuantityBeer() {
+        BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
+        BeerEntity beerEntity = beerMapper.toModel(beerDTO);
+
+        when(beerRepository.findById( beerDTO.getId() )).thenReturn(Optional.of(beerEntity));
+
+        int incrementToBeer = 35;
+
+        Assertions.assertThrows(BeerQuantityException.class,
+                () -> beerService.incrementQuantityBeer( beerDTO.getId(), incrementToBeer ));
+    }
+
+    @Test
+    @DisplayName("Deve lançar a Exception ao incrementar a quantidade de beer.")
+    void whenQuantityBeerInformatedThenThrowsExceptionQuantityBeer() {
+        BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
+        BeerEntity beerEntity = beerMapper.toModel(beerDTO);
+
+        when(beerRepository.findById( beerDTO.getId() )).thenReturn(Optional.of(beerEntity));
+
+        int incrementToBeer = beerDTO.getMax() + 5;
+
+        Assertions.assertThrows(BeerQuantityException.class,
+                () -> beerService.incrementQuantityBeer(beerDTO.getId(), incrementToBeer));
     }
 
 }
