@@ -5,6 +5,7 @@ import dio.innovation.beerAPI.builder.StringBeerDTOBuilder;
 import dio.innovation.beerAPI.dto.BeerDTO;
 import dio.innovation.beerAPI.exception.BeerAlreadyRegisteredException;
 import dio.innovation.beerAPI.exception.BeerNoSuchElementException;
+import dio.innovation.beerAPI.exception.BeerQuantityException;
 import dio.innovation.beerAPI.service.BeerService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,7 @@ public class BeerControllerTest {
     private static final String UPDATE_BEER = "/beer/update/{id}";
     private static final String FIND_BY_NAME_BEER = "/beer/findName/{name}";
     private static final String DELETE_BEER = "/beer/delete/{id}";
+    private static final String INCREMENT_BEER = "/beer/{id}/increment/{quantity}";
     private static final Long INVALID_ID = 5L;
 
     private MockMvc mockMvc;
@@ -203,4 +205,47 @@ public class BeerControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void whenIncrementBeerCalledThenIncrementQuantityBeer() throws Exception {
+        BeerDTO expectedBeerDTO = BeerDTOBuilder.createBeerDTOBuilder();
+
+        int incrementToBeer = 10;
+
+        when(beerService.incrementQuantityBeer( expectedBeerDTO.getId(), incrementToBeer ))
+                .thenReturn(expectedBeerDTO);
+
+        mockMvc.perform(patch(INCREMENT_BEER, expectedBeerDTO.getId(), incrementToBeer)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(expectedBeerDTO.getId()))
+                .andExpect(jsonPath("$.name").value(expectedBeerDTO.getName()))
+                .andExpect(jsonPath("$.quantity").value(expectedBeerDTO.getQuantity()));
+    }
+
+    @Test
+    void whenIncrementBeerCalledThenExceptionQuantityBeer() throws Exception {
+        BeerDTO expectedBeerDTO = BeerDTOBuilder.createBeerDTOBuilder();
+
+        int incrementToBeer = 50;
+
+        when(beerService.incrementQuantityBeer( expectedBeerDTO.getId(), incrementToBeer ))
+                .thenThrow(BeerQuantityException.class);
+
+        mockMvc.perform(patch(INCREMENT_BEER, expectedBeerDTO.getId(), incrementToBeer)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenIncrementBeerCalledThenBeerNotFound() throws Exception {
+
+        int incrementToBeer = 10;
+
+        when(beerService.incrementQuantityBeer( INVALID_ID, incrementToBeer ))
+                .thenThrow(BeerNoSuchElementException.class);
+
+        mockMvc.perform(patch(INCREMENT_BEER, INVALID_ID, incrementToBeer)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 }

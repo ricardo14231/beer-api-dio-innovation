@@ -3,6 +3,7 @@ package dio.innovation.beerAPI.controller;
 import dio.innovation.beerAPI.dto.BeerDTO;
 import dio.innovation.beerAPI.exception.BeerAlreadyRegisteredException;
 import dio.innovation.beerAPI.exception.BeerNoSuchElementException;
+import dio.innovation.beerAPI.exception.BeerQuantityException;
 import dio.innovation.beerAPI.service.BeerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -75,6 +76,15 @@ public class BeerController {
             return new ResponseEntity<>(res, HttpStatus.OK);
         }catch (BeerNoSuchElementException err) {
             return new ResponseEntity<>(err.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PatchMapping("/{id}/increment/{quantity}")
+    public ResponseEntity<BeerDTO> incrementBeer(@PathVariable Long id, @PathVariable int quantity) {
+        try {
+            return new ResponseEntity<>(beerService.incrementQuantityBeer(id, quantity), HttpStatus.OK);
+        }catch (BeerNoSuchElementException | BeerQuantityException err) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
