@@ -1,6 +1,6 @@
 package dio.innovation.beerAPI.service;
 
-import dio.innovation.beerAPI.builder.BeerDTOBulder;
+import dio.innovation.beerAPI.builder.BeerDTOBuilder;
 import dio.innovation.beerAPI.dto.BeerDTO;
 import dio.innovation.beerAPI.entity.BeerEntity;
 import dio.innovation.beerAPI.exception.BeerAlreadyRegisteredException;
@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,7 +39,7 @@ public class BeerServiceTest {
     @Test
     @DisplayName("Deve salvar a beer.")
     void whenBeerInformatedThenItShouldBeCreated() throws BeerAlreadyRegisteredException {
-        BeerDTO beerDTO = BeerDTOBulder.createBeerDTOBuilder();
+        BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
         BeerEntity beerEntityToSave = beerMapper.toModel(beerDTO);
 
         when(beerRepository.findByName(beerEntityToSave.getName())).thenReturn(Optional.empty());
@@ -52,7 +53,7 @@ public class BeerServiceTest {
     @Test
     @DisplayName("Não deve salvar duas cervejas com o mesmo nome.")
     void whenGivenSameBeerNamesShouldNotSave() {
-        BeerDTO beerDTO = BeerDTOBulder.createBeerDTOBuilder();
+        BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
         BeerEntity duplicatedBeer = beerMapper.toModel(beerDTO);
 
         when(beerRepository.findByName(beerDTO.getName())).thenReturn(Optional.of(duplicatedBeer));
@@ -64,12 +65,15 @@ public class BeerServiceTest {
     @Test
     @DisplayName("Deve retornar uma lista de beer.")
     void whenRequestListAllBeerThenItShouldReturnListToBeer() {
-        List<BeerDTO> beerDTOs = Collections.singletonList(BeerDTOBulder.createBeerDTOBuilder());
-        List<BeerEntity> beerEntities = beerDTOs.stream().map(beerMapper::toModel).collect(Collectors.toList());
+        BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
+        BeerEntity beerEntitie = beerMapper.toModel( beerDTO );
 
-        when(beerRepository.findAll()).thenReturn(beerEntities);
+        when(beerRepository.findAll()).thenReturn(Collections.singletonList(beerEntitie));
 
-        assertThat(beerDTOs, is(beerService.listAllBeer()));
+        List<BeerDTO> listBeerDTO = beerService.listAllBeer();
+
+        assertThat(listBeerDTO, is(not(empty())));
+        assertThat(listBeerDTO.get(0), is(equalTo(beerDTO)));
     }
 
     @Test
@@ -84,7 +88,7 @@ public class BeerServiceTest {
     @Test
     @DisplayName("Deve atualizar a beer.")
     void whenBeerInformatedThenItShouldUpdateToBeer() throws BeerAlreadyRegisteredException {
-        BeerDTO beerDTOUpdate = BeerDTOBulder.updateBeerDTOBuilder();
+        BeerDTO beerDTOUpdate = BeerDTOBuilder.updateBeerDTOBuilder();
         BeerEntity expectedBeerToUpdate = beerMapper.toModel(beerDTOUpdate);
 
         when(beerRepository.findById( expectedBeerToUpdate.getId() )).thenReturn(Optional.of(expectedBeerToUpdate));
@@ -97,7 +101,7 @@ public class BeerServiceTest {
     @Test
     @DisplayName("Deve retornar beer não encontrada.")
     void whenBeerInformatedThenItShouldBeerNotFound() {
-        BeerDTO beerUpdate = BeerDTOBulder.createBeerDTOBuilder();
+        BeerDTO beerUpdate = BeerDTOBuilder.createBeerDTOBuilder();
         BeerEntity expectedBeerToUpdate = beerMapper.toModel(beerUpdate);
 
         when(beerRepository.findById( expectedBeerToUpdate.getId() )).thenReturn(Optional.empty());
@@ -107,15 +111,40 @@ public class BeerServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar a beer ao pesquisar pelo nome.")
+    void whenNameBeerInformatedThenItShouldBeer() {
+        BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
+        BeerEntity expectedBeer = beerMapper.toModel(beerDTO);
+
+        when(beerRepository.findByName( beerDTO.getName() )).thenReturn(Optional.of(expectedBeer));
+
+        assertThat(beerDTO,
+                is(equalTo(beerService.findByNameBeer( beerDTO.getName() ))));
+    }
+
+    @Test
+    @DisplayName("Não deve retornar a beer ao pesquisar pelo nome.")
+    void whenNameBeerInformatedThenItShouldBeerNotFound() {
+        BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
+
+        when(beerRepository.findByName( beerDTO.getName() ))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThrows( BeerNoSuchElementException.class ,
+                () -> beerService.findByNameBeer( beerDTO.getName() ));
+    }
+
+    @Test
     @DisplayName("Deve deletar a beer.")
     void whenBeerIdInformatedThenItShouldDeleteBeer() {
-        BeerDTO beerDelete = BeerDTOBulder.createBeerDTOBuilder();
+        BeerDTO beerDelete = BeerDTOBuilder.createBeerDTOBuilder();
         BeerEntity expectedBeer = beerMapper.toModel(beerDelete);
 
-        when(beerRepository.findById(1L)).thenReturn(Optional.of(expectedBeer));
+        when(beerRepository.findById( beerDelete.getId() )).thenReturn(Optional.of(expectedBeer));
+        doNothing().when(beerRepository).deleteById( beerDelete.getId() );
 
-        assertThat(String.format("Cerveja com ID: %o deleteda!", 1L ),
-                is(beerService.deleteBeer(1L)));
+        assertThat(String.format("Cerveja com ID: %o deleteda!", beerDelete.getId() ),
+                is(beerService.deleteBeer(beerDelete.getId())));
     }
 
     @Test

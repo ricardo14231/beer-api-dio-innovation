@@ -20,7 +20,7 @@ public class BeerController {
     BeerService beerService;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createBeer(@RequestBody @Valid BeerDTO beerDTO) throws BeerAlreadyRegisteredException {
+    public ResponseEntity<String> createBeer(@RequestBody @Valid BeerDTO beerDTO) {
 
         try {
             String res = beerService.createBeer(beerDTO);
@@ -47,9 +47,19 @@ public class BeerController {
         }
     }
 
+    @GetMapping("/findName/{name}")
+    public ResponseEntity<BeerDTO> findByNameBeer(@PathVariable String name) {
+        try {
+            BeerDTO beerDTO = beerService.findByNameBeer(name);
+            return new ResponseEntity<>(beerDTO, HttpStatus.OK);
+        }catch (BeerNoSuchElementException err) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateBeer(@PathVariable Long id, @RequestBody @Valid BeerDTO beerDTO) {
-
         try {
             String res = beerService.updateBeer(id, beerDTO);
             return new ResponseEntity<>(res, HttpStatus.OK);

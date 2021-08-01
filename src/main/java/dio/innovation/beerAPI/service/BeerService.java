@@ -47,6 +47,13 @@ public class BeerService {
         return beerMapper.toDTO( verifyIfExists(id) );
     }
 
+    public BeerDTO findByNameBeer(String name) {
+        BeerEntity beerEntity = beerRepository.findByName(name)
+                .orElseThrow(() -> new BeerNoSuchElementException(null));
+
+        return beerMapper.toDTO(beerEntity);
+    }
+
     public String updateBeer(Long id, BeerDTO beerDTO) throws BeerAlreadyRegisteredException {
 
         beerAlreadyRegistered(beerDTO.getName());

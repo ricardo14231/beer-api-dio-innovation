@@ -3,7 +3,7 @@ package dio.innovation.beerAPI.builder;
 import dio.innovation.beerAPI.dto.BeerDTO;
 import dio.innovation.beerAPI.enums.BeerType;
 
-public class BeerDTOBulder {
+public class BeerDTOBuilder {
 
     private Long id;
 
@@ -38,4 +38,5 @@ public class BeerDTOBulder {
                 .type(BeerType.ALE)
                 .build();
     }
+
 }
