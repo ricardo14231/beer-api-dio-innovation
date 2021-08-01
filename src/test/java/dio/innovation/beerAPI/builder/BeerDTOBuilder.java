@@ -17,6 +17,14 @@ public class BeerDTOBuilder {
 
     private BeerType type;
 
+    private String imagePath;
+
+    private byte consumptionTemperature;
+
+    private byte alcoholicStrenght;
+
+    private String description;
+
     public static BeerDTO createBeerDTOBuilder() {
         return BeerDTO.builder()
                 .id(1L)
@@ -25,6 +33,10 @@ public class BeerDTOBuilder {
                 .max(50)
                 .quantity(20)
                 .type(BeerType.ALE)
+                .imagePath("/imagePath/img.jpeg")
+                .consumptionTemperature((byte) 5)
+                .alcoholicStrenght((byte) 60)
+                .description("description...")
                 .build();
     }
 
@@ -36,6 +48,10 @@ public class BeerDTOBuilder {
                 .max(50)
                 .quantity(20)
                 .type(BeerType.ALE)
+                .imagePath("/imagePath/img.jpeg")
+                .consumptionTemperature((byte) 5)
+                .alcoholicStrenght((byte) 60)
+                .description("description...")
                 .build();
     }
 

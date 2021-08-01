@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -35,4 +36,16 @@ public class BeerEntity {
 
     @JoinColumn(nullable = false)
     private BeerType type;
+
+    @Column
+    private String imagePath;
+
+    @Column
+    private byte consumptionTemperature;
+
+    @Column(nullable = false)
+    private byte alcoholicStrenght;
+
+    @Column
+    private String description;
 }

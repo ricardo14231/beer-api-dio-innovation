@@ -39,5 +39,13 @@ public class BeerDTO {
     @NotNull
     @Enumerated(EnumType.STRING)
     private BeerType type;
-    
+
+    private String imagePath;
+
+    private byte consumptionTemperature;
+
+    @NotNull
+    private byte alcoholicStrenght;
+
+    private String description;
 }
