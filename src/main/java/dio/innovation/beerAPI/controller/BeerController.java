@@ -64,7 +64,7 @@ public class BeerController {
         try {
             String res = beerService.updateBeer(id, beerDTO);
             return new ResponseEntity<>(res, HttpStatus.OK);
-        }catch (BeerAlreadyRegisteredException err) {
+        }catch (BeerAlreadyRegisteredException | BeerNoSuchElementException err) {
             return new ResponseEntity<>(err.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
