@@ -77,7 +77,7 @@ public class BeerService {
 
         int quantityToMaxIncrement = quantityToIncrement + beerEntity.getQuantity();
 
-        if(quantityToMaxIncrement <= beerEntity.getMax()) {
+        if(quantityToMaxIncrement <= beerEntity.getMax() && quantityToMaxIncrement >= 0) {
             int currentQuantity = beerEntity.getQuantity();
             beerEntity.setQuantity(currentQuantity + quantityToIncrement);
             beerRepository.save(beerEntity);
