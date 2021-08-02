@@ -9,14 +9,14 @@ Foram feitas algumas alterações na atividade sugerida.
 
 ## Pré-requisitos para executar o projeto:
 
-Java: 11 ou superior
-Maven: 3.8.1
+Java: 11 ou superior.  
+Maven: 3.8.1  
 JUnit 5.
 
 ## Para executar a aplicação:
 
-No diretório do projeto execute o seguinte comando no terminal:
-mvn spring-boot:run 
+No diretório do projeto execute o seguinte comando no terminal:  
+`mvn spring-boot:run` 
 
 ## Endpoints:
 
