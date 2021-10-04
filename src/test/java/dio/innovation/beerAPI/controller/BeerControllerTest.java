@@ -9,6 +9,7 @@ import dio.innovation.beerAPI.exception.BeerQuantityException;
 import dio.innovation.beerAPI.service.BeerService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,6 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Tests for beer controller.")
 public class BeerControllerTest {
 
     private static final String CREATE_BEER = "/beer/create";
@@ -56,7 +58,8 @@ public class BeerControllerTest {
     }
 
     @Test
-    void whenCreateBeerCalledThenReturnBeerIsCreated() throws Exception {
+    @DisplayName("Returns created beer message.")
+    void whenCreateBeerCalled_ThenReturnBeerIsCreated() throws Exception {
         BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
         String beerDTORequest = StringBeerDTOBuilder.createBeerBuilder();
 
@@ -71,7 +74,8 @@ public class BeerControllerTest {
     }
 
     @Test
-    void whenCreateBeerCalledThenReturnBadRequest() throws Exception {
+    @DisplayName("Returns bad request status when called to create beer.")
+    void whenCreateBeerCalled_ThenReturnBadRequest() throws Exception {
         String beerDTORequest = StringBeerDTOBuilder.createBeerNoNameBuilder();
 
         mockMvc.perform(post(CREATE_BEER)
@@ -81,7 +85,8 @@ public class BeerControllerTest {
     }
 
     @Test
-    void whenListBeerCalledThenReturnList() throws Exception {
+    @DisplayName("Returns beer list.")
+    void whenListBeerCalled_ThenReturnList() throws Exception {
         List<BeerDTO> beerDTOs = Collections.singletonList(BeerDTOBuilder.createBeerDTOBuilder());
 
         when(beerService.listAllBeer()).thenReturn(beerDTOs);
@@ -94,7 +99,8 @@ public class BeerControllerTest {
     }
 
     @Test
-    void whenListBeerCalledThenReturnListEmpty() throws Exception {
+    @DisplayName("Returns beer list empty.")
+    void whenListBeerCalled_ThenReturnListEmpty() throws Exception {
 
         when(beerService.listAllBeer()).thenReturn(Collections.emptyList());
 
@@ -105,7 +111,8 @@ public class BeerControllerTest {
     }
 
     @Test
-    void whenFindByIdBeerCalledThenBeer() throws Exception {
+    @DisplayName("Returns beer per id.")
+    void whenFindByIdBeerCalled_ThenBeer() throws Exception {
         BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
 
         when(beerService.findByIdBeer(1L)).thenReturn(beerDTO);
@@ -117,7 +124,8 @@ public class BeerControllerTest {
     }
 
     @Test
-    void whenFindByIdBeerCalledThenBeerNotFound() throws Exception {
+    @DisplayName("Returns not found status when searching beer by id.")
+    void whenFindByIdBeerCalled_ThenBeerNotFound() throws Exception {
 
         when(beerService.findByIdBeer(1L)).thenThrow(BeerNoSuchElementException.class);
 
@@ -127,7 +135,8 @@ public class BeerControllerTest {
     }
 
     @Test
-    void whenFindNameBeerCalledThenReturnBeer() throws Exception {
+    @DisplayName("Returns the beer when searched by name.")
+    void whenFindNameBeerCalled_ThenReturnBeer() throws Exception {
         BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
 
         when(beerService.findByNameBeer(beerDTO.getName()))
@@ -140,7 +149,8 @@ public class BeerControllerTest {
     }
 
     @Test
-    void whenFindNameBeerCalledThenReturnBeerNotFound() throws Exception {
+    @DisplayName("Returns not found status when called to create beer.")
+    void whenFindNameBeerCalled_ThenReturnBeerNotFound() throws Exception {
         BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
 
         when(beerService.findByNameBeer(beerDTO.getName()))
@@ -151,9 +161,9 @@ public class BeerControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    //TODO VERIFICAR
     @Test
-    void whenUpdateBeerCalledThenUpdateBeer() throws Exception {
+    @DisplayName("Returns success message when called update beer.")
+    void whenUpdateBeerCalled_ThenUpdateBeer() throws Exception {
         BeerDTO updateBeerDTO = BeerDTOBuilder.updateBeerDTOBuilder();
         String beerUpdate = StringBeerDTOBuilder.updateBeerBuilder();
 
@@ -168,7 +178,8 @@ public class BeerControllerTest {
     }
 
     @Test
-    void whenUpdateBeerCalledThenUpdateBeerNotFound() throws Exception {
+    @DisplayName("Returns not found status when called update beer.")
+    void whenUpdateBeerCalled_ThenUpdateBeerNotFound() throws Exception {
         BeerDTO updateBeerDTO = BeerDTOBuilder.updateBeerDTOBuilder();
         String beerUpdate = StringBeerDTOBuilder.updateBeerBuilder();
 
@@ -182,7 +193,8 @@ public class BeerControllerTest {
     }
 
     @Test
-    void whenDeleteBeerCalledThenStatusOk() throws Exception {
+    @DisplayName("Returns Ok status when delete beer.")
+    void whenDeleteBeerCalled_ThenStatusOk() throws Exception {
         BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
 
         when(beerService.deleteBeer( beerDTO.getId() ))
@@ -195,7 +207,8 @@ public class BeerControllerTest {
     }
 
     @Test
-    void whenDeleteBeerCalledThenBeerNotFound() throws Exception {
+    @DisplayName("Returns not found status when delete beer")
+    void whenDeleteBeerCalled_ThenBeerNotFound() throws Exception {
 
         when(beerService.deleteBeer( INVALID_ID ))
                 .thenThrow(BeerNoSuchElementException.class);
@@ -206,7 +219,8 @@ public class BeerControllerTest {
     }
 
     @Test
-    void whenIncrementBeerCalledThenIncrementQuantityBeer() throws Exception {
+    @DisplayName("Returns the beer increment.")
+    void whenIncrementBeerCalled_ThenIncrementQuantityBeer() throws Exception {
         BeerDTO expectedBeerDTO = BeerDTOBuilder.createBeerDTOBuilder();
 
         int incrementToBeer = 10;
@@ -223,7 +237,8 @@ public class BeerControllerTest {
     }
 
     @Test
-    void whenIncrementBeerCalledThenExceptionQuantityBeer() throws Exception {
+    @DisplayName("Returns bad request status when calling the maximum beer quantity increment.")
+    void whenIncrementBeerCalled_ThenExceptionQuantityBeer() throws Exception {
         BeerDTO expectedBeerDTO = BeerDTOBuilder.createBeerDTOBuilder();
 
         int incrementToBeer = 50;
@@ -237,8 +252,8 @@ public class BeerControllerTest {
     }
 
     @Test
-    void whenIncrementBeerCalledThenBeerNotFound() throws Exception {
-
+    @DisplayName("Returns bad request status when called beer quantity.")
+    void whenIncrementBeerCalled_ThenBeerNotFound() throws Exception {
         int incrementToBeer = 10;
 
         when(beerService.incrementQuantityBeer( INVALID_ID, incrementToBeer ))

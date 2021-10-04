@@ -1,12 +1,13 @@
 package dio.innovation.beerAPI.builder;
 
 import dio.innovation.beerAPI.dto.BeerDTO;
+import dio.innovation.beerAPI.entity.BeerEntity;
 import dio.innovation.beerAPI.enums.BeerType;
 
-public class BeerDTOBuilder {
+public class BeerEntityBuilder {
 
-    public static BeerDTO createBeerDTOBuilder() {
-        return BeerDTO.builder()
+    public static BeerEntity createBeerEntityToSavedBuilder() {
+        return BeerEntity.builder()
                 .id(1L)
                 .name("Brahma")
                 .brand("Ambev")
@@ -19,8 +20,8 @@ public class BeerDTOBuilder {
                 .build();
     }
 
-    public static BeerDTO updateBeerDTOBuilder() {
-        return BeerDTO.builder()
+    public static BeerEntity updateBeerEntityBuilder() {
+        return BeerEntity.builder()
                 .id(1L)
                 .name("Skol")
                 .brand("Ambev")
@@ -32,5 +33,4 @@ public class BeerDTOBuilder {
                 .description("description...")
                 .build();
     }
-
 }
