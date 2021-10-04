@@ -5,6 +5,10 @@ import dio.innovation.beerAPI.exception.BeerAlreadyRegisteredException;
 import dio.innovation.beerAPI.exception.BeerNoSuchElementException;
 import dio.innovation.beerAPI.exception.BeerQuantityException;
 import dio.innovation.beerAPI.service.BeerService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +19,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("beer")
+@Api("Endpoint beer.")
 public class BeerController {
 
-    @Autowired
-    BeerService beerService;
+    private final BeerService beerService;
+
+    public BeerController(BeerService beerService) {
+        this.beerService = beerService;
+    }
 
     @PostMapping("/create")
+    @ApiOperation("Adiciona uma nova cerveja")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Cerveja adicionada com sucesso."),
+            @ApiResponse(code = 400, message = "Falha ao adicionar a ceveja."),
+    })
     public ResponseEntity<String> createBeer(@RequestBody @Valid BeerDTO beerDTO) {
 
         try {
@@ -38,6 +51,11 @@ public class BeerController {
     }
 
     @GetMapping("/{id}")
+    @ApiOperation("Retorna uma cerveja por ID.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Cerveja encontrada."),
+            @ApiResponse(code = 404, message = "Ceveja não encontrada."),
+    })
     public ResponseEntity<BeerDTO> findByIdBeer(@PathVariable Long id) {
 
         try {
@@ -49,6 +67,11 @@ public class BeerController {
     }
 
     @GetMapping("/findName/{name}")
+    @ApiOperation("Retorna uma cerveja por nome.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Cerveja encontrada."),
+            @ApiResponse(code = 404, message = "Ceveja não encontrada."),
+    })
     public ResponseEntity<BeerDTO> findByNameBeer(@PathVariable String name) {
         try {
             BeerDTO beerDTO = beerService.findByNameBeer(name);
@@ -60,6 +83,11 @@ public class BeerController {
 
 
     @PutMapping("/update/{id}")
+    @ApiOperation("Atualiza uma cerveja..")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Cerveja atualizada com sucesso."),
+            @ApiResponse(code = 404, message = "Ceveja não encontrada ou cerveja já cadastrada."),
+    })
     public ResponseEntity<String> updateBeer(@PathVariable Long id, @RequestBody @Valid BeerDTO beerDTO) {
         try {
             String res = beerService.updateBeer(id, beerDTO);
@@ -70,6 +98,11 @@ public class BeerController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @ApiOperation("Deleta uma cerveja.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Cerveja deletada com sucesso."),
+            @ApiResponse(code = 404, message = "Ceveja não encontrada."),
+    })
     public ResponseEntity<String> deleteBeer(@PathVariable Long id) {
         try {
             String res = beerService.deleteBeer(id);
@@ -80,6 +113,11 @@ public class BeerController {
     }
 
     @PatchMapping("/{id}/increment/{quantity}")
+    @ApiOperation("Atualiza a quantidade de cerveja no estoque.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Atualização do estoque com sucesso."),
+            @ApiResponse(code = 400, message = "Ceveja não encontrada."),
+    })
     public ResponseEntity<BeerDTO> incrementBeer(@PathVariable Long id, @PathVariable int quantity) {
         try {
             return new ResponseEntity<>(beerService.incrementQuantityBeer(id, quantity), HttpStatus.OK);
