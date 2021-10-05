@@ -1,7 +1,7 @@
 package dio.innovation.beerAPI.controller;
 
-import dio.innovation.beerAPI.builder.BeerDTOBuilder;
-import dio.innovation.beerAPI.builder.StringBeerDTOBuilder;
+import dio.innovation.beerAPI.utils.BeerDTOBuilder;
+import dio.innovation.beerAPI.utils.StringBeerDTOBuilder;
 import dio.innovation.beerAPI.dto.BeerDTO;
 import dio.innovation.beerAPI.exception.BeerAlreadyRegisteredException;
 import dio.innovation.beerAPI.exception.BeerNoSuchElementException;
@@ -61,6 +61,8 @@ public class BeerControllerTest {
     @DisplayName("Returns created beer message.")
     void whenCreateBeerCalled_ThenReturnBeerIsCreated() throws Exception {
         BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
+        beerDTO.setId(1L);
+
         String beerDTORequest = StringBeerDTOBuilder.createBeerBuilder();
 
         when(beerService.createBeer(beerDTO))
@@ -196,6 +198,7 @@ public class BeerControllerTest {
     @DisplayName("Returns Ok status when delete beer.")
     void whenDeleteBeerCalled_ThenStatusOk() throws Exception {
         BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
+        beerDTO.setId(1L);
 
         when(beerService.deleteBeer( beerDTO.getId() ))
                 .thenReturn(String.format("Cerveja com ID: %o deleteda!", beerDTO.getId()));
@@ -222,6 +225,7 @@ public class BeerControllerTest {
     @DisplayName("Returns the beer increment.")
     void whenIncrementBeerCalled_ThenIncrementQuantityBeer() throws Exception {
         BeerDTO expectedBeerDTO = BeerDTOBuilder.createBeerDTOBuilder();
+        expectedBeerDTO.setId(1L);
 
         int incrementToBeer = 10;
 
@@ -240,6 +244,7 @@ public class BeerControllerTest {
     @DisplayName("Returns bad request status when calling the maximum beer quantity increment.")
     void whenIncrementBeerCalled_ThenExceptionQuantityBeer() throws Exception {
         BeerDTO expectedBeerDTO = BeerDTOBuilder.createBeerDTOBuilder();
+        expectedBeerDTO.setId(1L);
 
         int incrementToBeer = 50;
 

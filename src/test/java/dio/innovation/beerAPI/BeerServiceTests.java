@@ -1,7 +1,5 @@
 package dio.innovation.beerAPI;
 
-import dio.innovation.beerAPI.builder.BeerDTOBuilder;
-import dio.innovation.beerAPI.builder.BeerEntityBuilder;
 import dio.innovation.beerAPI.dto.BeerDTO;
 import dio.innovation.beerAPI.entity.BeerEntity;
 import dio.innovation.beerAPI.exception.BeerAlreadyRegisteredException;
@@ -9,6 +7,8 @@ import dio.innovation.beerAPI.exception.BeerNoSuchElementException;
 import dio.innovation.beerAPI.exception.BeerQuantityException;
 import dio.innovation.beerAPI.repository.BeerRepository;
 import dio.innovation.beerAPI.service.BeerService;
+import dio.innovation.beerAPI.utils.BeerDTOBuilder;
+import dio.innovation.beerAPI.utils.BeerEntityBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,13 +44,16 @@ class BeerServiceTests {
 	@Test
 	@DisplayName("Successful when create beer.")
 	void createBeer_ReturnMessageSuccessful_whenSuccessful() throws BeerAlreadyRegisteredException {
+		BeerEntity beerToSaved = BeerEntityBuilder.createBeerEntityToSavedBuilder();
+		beerToSaved.setId(1L);
+
 		BeerDTO beerToSave = BeerDTOBuilder.createBeerDTOBuilder();
-		Long idExpected = beerToSave.getId();
-		beerToSave.setId(null);
+
+		BDDMockito.when(beerRepository.save(Mockito.any())).thenReturn(beerToSaved);
 
 		String response = beerService.createBeer(beerToSave);
 
-		Assertions.assertEquals(String.format("Cerveja salva com ID: %o.", idExpected), response);
+		Assertions.assertEquals(String.format("Cerveja salva com ID: %o.", beerToSave.getId()), response);
 	}
 
 	@Test
@@ -136,7 +139,7 @@ class BeerServiceTests {
 
 	@Test
 	@DisplayName("Return element not found when called update beer.")
-	void updateBeer_ReturnNoSuchElementException_whenElementNotFound() throws BeerAlreadyRegisteredException {
+	void updateBeer_ReturnNoSuchElementException_whenElementNotFound() {
 		BeerDTO beerToUpdate = BeerDTOBuilder.updateBeerDTOBuilder();
 
 		BDDMockito.when(beerRepository.findById(Mockito.any())).thenReturn(Optional.empty());
@@ -147,7 +150,7 @@ class BeerServiceTests {
 
 	@Test
 	@DisplayName("Successful when delete beer.")
-	void deleteBeer_ReturnMessageSuccessful_whenSuccessful() throws BeerAlreadyRegisteredException {
+	void deleteBeer_ReturnMessageSuccessful_whenSuccessful() {
 		BeerEntity beerToDelete = BeerEntityBuilder.updateBeerEntityBuilder();
 
 		BDDMockito.when(beerRepository.findById(Mockito.any())).thenReturn(Optional.of(beerToDelete));
@@ -160,7 +163,7 @@ class BeerServiceTests {
 
 	@Test
 	@DisplayName("Return element not found when called delete beer.")
-	void deleteBeer_ReturnNoSuchElementException_whenElementNotFound() throws BeerAlreadyRegisteredException {
+	void deleteBeer_ReturnNoSuchElementException_whenElementNotFound() {
 		BeerDTO beerToDelete = BeerDTOBuilder.updateBeerDTOBuilder();
 
 		BDDMockito.when(beerRepository.findById(Mockito.any())).thenReturn(Optional.empty());
@@ -186,7 +189,7 @@ class BeerServiceTests {
 
 	@Test
 	@DisplayName("Returns beer not found when incrementing beer.")
-	void incrementQuantity_ReturnNoSuchElementException_whenElementNotFound() throws BeerQuantityException {
+	void incrementQuantity_ReturnNoSuchElementException_whenElementNotFound() {
 
 		BDDMockito.when(beerRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 
@@ -196,7 +199,7 @@ class BeerServiceTests {
 
 	@Test
 	@DisplayName("Returns exception when incrementing the maximum beer")
-	void incrementQuantity_ReturnLimitMaximumQuantity_when() throws BeerQuantityException {
+	void incrementQuantity_ReturnLimitMaximumQuantity_when() {
 		BeerEntity beerToExpected = BeerEntityBuilder.createBeerEntityToSavedBuilder();
 
 		BDDMockito.when(beerRepository.findById(Mockito.any())).thenReturn(Optional.of(beerToExpected));
@@ -207,7 +210,7 @@ class BeerServiceTests {
 
 	@Test
 	@DisplayName("Returns exception when incrementing the minimum beer")
-	void incrementQuantity_ReturnLimitMinimumQuantity_whenElementNotFound() throws BeerQuantityException {
+	void incrementQuantity_ReturnLimitMinimumQuantity_whenElementNotFound() {
 
 		BeerEntity beerToExpected = BeerEntityBuilder.createBeerEntityToSavedBuilder();
 

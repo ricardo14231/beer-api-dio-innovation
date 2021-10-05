@@ -9,7 +9,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,7 +55,7 @@ public class BeerController {
             @ApiResponse(code = 200, message = "Cerveja encontrada."),
             @ApiResponse(code = 404, message = "Ceveja não encontrada."),
     })
-    public ResponseEntity<BeerDTO> findByIdBeer(@PathVariable Long id) {
+    public ResponseEntity findByIdBeer(@PathVariable Long id) {
 
         try {
             BeerDTO beerDTO = beerService.findByIdBeer(id);
@@ -72,12 +71,12 @@ public class BeerController {
             @ApiResponse(code = 200, message = "Cerveja encontrada."),
             @ApiResponse(code = 404, message = "Ceveja não encontrada."),
     })
-    public ResponseEntity<BeerDTO> findByNameBeer(@PathVariable String name) {
+    public ResponseEntity findByNameBeer(@PathVariable String name) {
         try {
             BeerDTO beerDTO = beerService.findByNameBeer(name);
             return new ResponseEntity<>(beerDTO, HttpStatus.OK);
         }catch (BeerNoSuchElementException err) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(err.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -118,12 +117,11 @@ public class BeerController {
             @ApiResponse(code = 200, message = "Atualização do estoque com sucesso."),
             @ApiResponse(code = 400, message = "Ceveja não encontrada."),
     })
-    public ResponseEntity<BeerDTO> incrementBeer(@PathVariable Long id, @PathVariable int quantity) {
+    public ResponseEntity incrementBeer(@PathVariable Long id, @PathVariable int quantity) {
         try {
             return new ResponseEntity<>(beerService.incrementQuantityBeer(id, quantity), HttpStatus.OK);
         }catch (BeerNoSuchElementException | BeerQuantityException err) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(err.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
 }

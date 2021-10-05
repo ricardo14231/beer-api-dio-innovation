@@ -1,4 +1,4 @@
-package dio.innovation.beerAPI.builder;
+package dio.innovation.beerAPI.utils;
 
 import dio.innovation.beerAPI.dto.BeerDTO;
 import dio.innovation.beerAPI.enums.BeerType;
@@ -7,7 +7,6 @@ public class BeerDTOBuilder {
 
     public static BeerDTO createBeerDTOBuilder() {
         return BeerDTO.builder()
-                .id(1L)
                 .name("Brahma")
                 .brand("Ambev")
                 .max(50)

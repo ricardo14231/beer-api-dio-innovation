@@ -1,6 +1,5 @@
-package dio.innovation.beerAPI.builder;
+package dio.innovation.beerAPI.utils;
 
-import dio.innovation.beerAPI.dto.BeerDTO;
 import dio.innovation.beerAPI.entity.BeerEntity;
 import dio.innovation.beerAPI.enums.BeerType;
 
@@ -8,7 +7,6 @@ public class BeerEntityBuilder {
 
     public static BeerEntity createBeerEntityToSavedBuilder() {
         return BeerEntity.builder()
-                .id(1L)
                 .name("Brahma")
                 .brand("Ambev")
                 .max(50)

@@ -1,6 +1,6 @@
 package dio.innovation.beerAPI.service;
 
-import dio.innovation.beerAPI.builder.BeerDTOBuilder;
+import dio.innovation.beerAPI.utils.BeerDTOBuilder;
 import dio.innovation.beerAPI.dto.BeerDTO;
 import dio.innovation.beerAPI.entity.BeerEntity;
 import dio.innovation.beerAPI.exception.BeerAlreadyRegisteredException;

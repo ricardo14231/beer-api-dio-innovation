@@ -1,4 +1,4 @@
-package dio.innovation.beerAPI.builder;
+package dio.innovation.beerAPI.utils;
 
 public class StringBeerDTOBuilder {
 
