@@ -38,7 +38,7 @@ public class BeerServiceTest {
 
     @Test
     @DisplayName("Deve salvar a beer.")
-    void whenBeerInformatedThenItShouldBeCreated() throws BeerAlreadyRegisteredException {
+    void whenBeerInformed_ThenItShouldBeCreated() throws BeerAlreadyRegisteredException {
         BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
         BeerEntity beerEntityToSave = beerMapper.toModel(beerDTO);
 
@@ -87,7 +87,7 @@ public class BeerServiceTest {
 
     @Test
     @DisplayName("Deve atualizar a beer.")
-    void whenBeerInformatedThenItShouldUpdateToBeer() throws BeerAlreadyRegisteredException {
+    void whenBeerInformed_ThenItShouldUpdateToBeer() throws BeerAlreadyRegisteredException {
         BeerDTO beerDTOUpdate = BeerDTOBuilder.updateBeerDTOBuilder();
         BeerEntity expectedBeerToUpdate = beerMapper.toModel(beerDTOUpdate);
 
@@ -100,7 +100,7 @@ public class BeerServiceTest {
 
     @Test
     @DisplayName("Deve retornar beer não encontrada.")
-    void whenBeerInformatedThenItShouldBeerNotFound() {
+    void whenBeerInformed_ThenItShouldBeerNotFound() {
         BeerDTO beerUpdate = BeerDTOBuilder.createBeerDTOBuilder();
         BeerEntity expectedBeerToUpdate = beerMapper.toModel(beerUpdate);
 
@@ -111,20 +111,32 @@ public class BeerServiceTest {
     }
 
     @Test
-    @DisplayName("Deve retornar a beer ao pesquisar pelo nome.")
-    void whenNameBeerInformatedThenItShouldBeer() {
+    @DisplayName("Deve retornar a beer ao pesquisar pelo id.")
+    void whenIdBeerInformed_ThenItShouldBeer() {
         BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
         BeerEntity expectedBeer = beerMapper.toModel(beerDTO);
 
-        when(beerRepository.findByName( beerDTO.getName() )).thenReturn(Optional.of(expectedBeer));
+        when(beerRepository.findById( beerDTO.getId() )).thenReturn(Optional.of(expectedBeer));
 
         assertThat(beerDTO,
-                is(equalTo(beerService.findByNameBeer( beerDTO.getName() ))));
+                is(equalTo(beerService.findByIdBeer( beerDTO.getId() ))));
+    }
+
+    @Test
+    @DisplayName("Deve retornar a beer ao pesquisar pelo id.")
+    void whenIdBeerInformed_ThenItShouldBeerNotFound() {
+        BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
+
+        when(beerRepository.findById( beerDTO.getId() ))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThrows( BeerNoSuchElementException.class ,
+                () -> beerService.findByIdBeer( beerDTO.getId() ));
     }
 
     @Test
     @DisplayName("Não deve retornar a beer ao pesquisar pelo nome.")
-    void whenNameBeerInformatedThenItShouldBeerNotFound() {
+    void whenNameBeerInformed_ThenItShouldBeerNotFound() {
         BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
 
         when(beerRepository.findByName( beerDTO.getName() ))
@@ -136,7 +148,7 @@ public class BeerServiceTest {
 
     @Test
     @DisplayName("Deve deletar a beer.")
-    void whenBeerIdInformatedThenItShouldDeleteBeer() {
+    void whenBeerIdInformed_ThenItShouldDeleteBeer() {
         BeerDTO beerDelete = BeerDTOBuilder.createBeerDTOBuilder();
         BeerEntity expectedBeer = beerMapper.toModel(beerDelete);
 
@@ -149,7 +161,7 @@ public class BeerServiceTest {
 
     @Test
     @DisplayName("Deve retornar beer não encontrada, ao deletar a beer.")
-    void whenBeerIdInformatedThenItShouldDeleteBeerNotFound() {
+    void whenBeerIdInformed_ThenItShouldDeleteBeerNotFound() {
 
         when(beerRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -159,7 +171,7 @@ public class BeerServiceTest {
 
     @Test
     @DisplayName("Deve permitir incrementar a quantidade de beer.")
-    void whenQuantityBeerInformatedThenIncrementToBeer() throws BeerQuantityException {
+    void whenQuantityBeerInformed_ThenIncrementToBeer() throws BeerQuantityException {
         BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
         BeerEntity beerEntity = beerMapper.toModel(beerDTO);
 
@@ -177,7 +189,7 @@ public class BeerServiceTest {
 
     @Test
     @DisplayName("Deve lançar a Exception após a soma do incremento com a quantidade de beer ultrapassar o max.")
-    void whenQuantityPlusCurrentBeerInformatedOverrunMaxThenThrowsExceptionQuantityBeer() {
+    void whenQuantityPlusCurrentBeerInformed_OverrunMaxThenThrowsExceptionQuantityBeer() {
         BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
         BeerEntity beerEntity = beerMapper.toModel(beerDTO);
 
@@ -191,7 +203,7 @@ public class BeerServiceTest {
 
     @Test
     @DisplayName("Deve lançar a Exception ao incrementar a quantidade de beer.")
-    void whenQuantityBeerInformatedThenThrowsExceptionQuantityBeer() {
+    void whenQuantityBeerInformed_ThenThrowsExceptionQuantityBeer() {
         BeerDTO beerDTO = BeerDTOBuilder.createBeerDTOBuilder();
         BeerEntity beerEntity = beerMapper.toModel(beerDTO);
 
